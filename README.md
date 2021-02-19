@@ -1,11 +1,10 @@
-## My Project
+## AMP-EKS-IAM tool
 
-TODO: Fill this README out!
+The amp-eks-iam tool helps reduce friction for Amazon Managed Service for Prometheus (AMP) customers by providing remote write privileges to authorized EKS accounts with an easier way to set up IAM.
 
-Be sure to:
+amp-eks-iam creates the required IAM policies and roles to give remote write privileges to an EKS service account. 
 
-* Change the title in this README
-* Edit your repository description on GitHub
+Also if you are collecting Prometheus metrics on EKS and want to write them to Amazon Managed Service for Prometheus (AMP), you can use this tool to give minimal privileges to a Kubernetes namespace and service account to send data to AMP.
 
 ## Security
 
