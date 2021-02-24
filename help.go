@@ -23,14 +23,13 @@ import (
 const helpText = `amp-eks-iam <cluster flags> [options...]
 
 amp-eks-iam creates the required IAM policies and roles to give
-remote write priviledges to an EKS service account.
+remote write privileges to an EKS service account.
 
 Example:
 $ amp-eks-iam \
-   -account=999999999999 -region=us-east-1 -cluster=eks-cluster
+   -region=us-east-1 -cluster=eks-cluster
 
 Cluster flags:
--account         AWS account ID, for example 999999999999.
 -cluster         EKS cluster name.
 
 Options:
