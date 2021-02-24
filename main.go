@@ -20,6 +20,7 @@ import (
 	"errors"
 	"flag"
 	"fmt"
+	"github.com/aws/aws-sdk-go/aws/credentials/stscreds"
 	"log"
 	"strings"
 	"text/template"
@@ -81,7 +82,12 @@ func main() {
 	if region != "" {
 		cfg.Region = aws.String(region)
 	}
-	sess, err := session.NewSession(cfg)
+
+	sess, err := session.NewSessionWithOptions(session.Options{
+		SharedConfigState:       session.SharedConfigEnable,
+		AssumeRoleTokenProvider: stscreds.StdinTokenProvider,
+		Config:                  *cfg,
+	})
 	if err != nil {
 		log.Fatalf("Cannot create session: %v", err)
 	}
