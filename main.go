@@ -21,6 +21,7 @@ import (
 	"flag"
 	"fmt"
 	"github.com/aws/aws-sdk-go/aws/credentials/stscreds"
+	"github.com/aws/aws-sdk-go/service/sts"
 	"log"
 	"strings"
 	"text/template"
@@ -40,7 +41,6 @@ const (
 )
 
 var (
-	account        string // AWS account ID
 	cluster        string // EKS cluster
 	region         string // AWS region, optional
 	namespace      string // Kubernetes namespace, optional
@@ -49,7 +49,6 @@ var (
 )
 
 func main() {
-	flag.StringVar(&account, "account", "", "AWS account ID")
 	flag.StringVar(&cluster, "cluster", "", "EKS cluster name")
 	flag.StringVar(&region, "region", "", "EKS cluster's region")
 	flag.StringVar(&namespace, "namespace", defaultNamespace, "EKS namespace to restrict the IAM policy for")
@@ -60,7 +59,7 @@ func main() {
 	}
 	flag.Parse()
 
-	if account == "" || cluster == "" {
+	if cluster == "" {
 		usageText(1)
 	}
 	if region == "" {
@@ -101,6 +100,7 @@ func main() {
 func createRole(sess *session.Session) error {
 	iamSvc := iam.New(sess)
 	eksSvc := eks.New(sess)
+	stsSvc := sts.New(sess)
 	clusterOut, err := eksSvc.DescribeCluster(&eks.DescribeClusterInput{
 		Name: aws.String(cluster),
 	})
@@ -108,9 +108,14 @@ func createRole(sess *session.Session) error {
 		return fmt.Errorf("failed to find the EKS cluster: %v", err)
 	}
 
+	callerIdentityOut, err := stsSvc.GetCallerIdentity(&sts.GetCallerIdentityInput{})
+	if err != nil {
+		return fmt.Errorf("failed to get caller's identity: %v", err)
+	}
+
 	trustDoc := bytes.NewBuffer(nil)
 	if err := trustDocTmpl.Execute(trustDoc, &trustDocVars{
-		Account:        account,
+		Account:        *callerIdentityOut.Account,
 		Namespace:      namespace,
 		ServiceAccount: serviceAccount,
 		OIDC:           strings.ReplaceAll(*clusterOut.Cluster.Identity.Oidc.Issuer, "https://", ""),

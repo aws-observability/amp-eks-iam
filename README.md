@@ -22,10 +22,9 @@ remote write priviledges to an EKS service account.
 
 Example:
 $ amp-eks-iam \
-   -account=999999999999 -region=us-east-1 -cluster=eks-cluster
+   -region=us-east-1 -cluster=eks-cluster
 
 Cluster flags:
--account         AWS account ID, for example 999999999999.
 -cluster         EKS cluster name.
 
 Options:
@@ -44,7 +43,7 @@ use the following command:
 
 ```
 $ amp-eks-iam \
-   -account=999999999999 -region=us-east-1 -cluster=eks-cluster \
+   -region=us-east-1 -cluster=eks-cluster \
    -namespace=grafana-agent \
    -service-account=grafana-agent
 ```
@@ -61,7 +60,7 @@ You can set a custom role name with -role:
 
 ```
 $ amp-eks-iam \
-   -account=999999999999 -region=us-east-1 -cluster=eks-cluster \
+   -region=us-east-1 -cluster=eks-cluster \
    -role AMPIngestRole
 ```
 
